@@ -13,3 +13,20 @@ body {
     height: 100%;
     font-family: "vazir";
 }
+
+.line span::before,
+.line span::after {
+    content: "";
+    position: absolute;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
+    top: 10px;
+    width: 185px;
+}
+
+.line span::before {
+    right: 20px;
+}
+
+.line span::after {
+    left: 20px;
+}
