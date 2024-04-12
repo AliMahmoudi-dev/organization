@@ -53,7 +53,7 @@ return [
     'enum' => 'The selected :attribute is invalid.',
     'exists' => 'The selected :attribute is invalid.',
     'extensions' => 'The :attribute field must have one of the following extensions: :values.',
-    'file' => 'The :attribute field must be a file.',
+    'file' => 'این فیلد باید یک فایل باشد',
     'filled' => 'The :attribute field must have a value.',
     'gt' => [
         'array' => 'The :attribute field must have more than :value items.',
@@ -115,7 +115,7 @@ return [
     'multiple_of' => 'The :attribute field must be a multiple of :value.',
     'not_in' => 'The selected :attribute is invalid.',
     'not_regex' => 'The :attribute field format is invalid.',
-    'numeric' => 'The :attribute field must be a number.',
+    'numeric' => 'مقدار این فیلد باید عددی باشد.',
     'password' => [
         'letters' => ':attribute حداقل باید حاوی یک حرف باشد',
         'mixed' => 'The :attribute field must contain at least one uppercase and one lowercase letter.',
@@ -171,8 +171,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'shaba_number' => [
+            'numeric' => 'لطفا شماره شبا خود را به صورت عددی و بدون IR وارد کنید.',
         ],
     ],
 
@@ -194,6 +194,10 @@ return [
         'password' => 'رمز عبور',
         'password_confirmation' => 'تکرار رمز عبور',
         'email' => 'ایمیل',
+        'category' => 'دسته بندی',
+        'shaba_number' => 'شماره شبا',
+        'amount' => 'مبلغ',
+        'file' => 'فایل',
     ],
 
 ];
