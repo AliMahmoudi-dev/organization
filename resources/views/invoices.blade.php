@@ -12,6 +12,34 @@
                     @if ($invoices->isNotEmpty())
                         @foreach ($invoices as $invoice)
                             <div class="border bg-gray-50 border-gray-300 mb-3.5">
+                                @can('view-all-invoices')
+                                    <div class="flex">
+                                        <ul class="w-1/2 border-l border-b border-gray-300 px-4 py-2">
+                                            <li class="text-sm text-gray-500 pb-1">نام و نام خانوادگی
+                                            </li>
+                                            <li>{{ $invoice->user->name }}</li>
+                                        </ul>
+
+                                        <ul class="w-1/2 px-4 py-2 border-b border-gray-300">
+                                            <li class="text-sm text-gray-500 pb-1">کد ملی</li>
+                                            <li>{{ $invoice->user->national_code }}</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="flex">
+                                        <ul class="w-1/2 border-l border-b border-gray-300 px-4 py-2">
+                                            <li class="text-sm text-gray-500 pb-1">شماره موبایل
+                                            </li>
+                                            <li dir="ltr">{{ $invoice->user->phone_number }}</li>
+                                        </ul>
+
+                                        <ul class="w-1/2 px-4 py-2 border-b border-gray-300">
+                                            <li class="text-sm text-gray-500 pb-1">ایمیل</li>
+                                            <li>{{ $invoice->user->email }}</li>
+                                        </ul>
+                                    </div>
+                                @endcan
+
                                 <div class="flex">
                                     <ul class="w-1/2 border-l border-gray-300 px-4 py-2">
                                         <li class="text-sm text-gray-500 pb-1">مبلغ <span class="text-xs">(تومان)</span>
@@ -34,7 +62,19 @@
                                     <ul class="w-1/2 border-t border-gray-300 px-4 py-2">
                                         <li class="text-sm text-gray-500 pb-1">وضعیت</span>
                                         </li>
-                                        <li>{{ $invoice->status ? 'تایید شده' : 'در انتظار تایید' }}</li>
+                                        @switch($invoice->status)
+                                            @case(-1)
+                                                <li>رد شده</li>
+                                            @break
+
+                                            @case(0)
+                                                <li>در انتظار تایید</li>
+                                            @break
+
+                                            @case(1)
+                                                <li>تایید شده</li>
+                                            @break
+                                        @endswitch
                                     </ul>
                                 </div>
 
@@ -50,16 +90,30 @@
                                     <ul class="w-full border-t border-gray-300 px-4 pt-2 pb-3">
                                         <li class="text-sm text-gray-500 pb-1">عملیات</span>
                                         </li>
-                                        <li class="grid grid-cols-3 gap-x-2">
+                                        <li
+                                            class="grid @can('confirm-invoices') grid-cols-5 @else grid-cols-3 @endcan gap-x-2">
                                             <a @if ($invoice->hasFile()) href="{{ route('invoices.download-file', $invoice->id) }}" @endif
-                                                class="block text-center py-1 {{ $invoice->hasFile() ? 'bg-sky-600 text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">دانلود
+                                                class="block text-center py-1 {{ $invoice->hasFile() ? 'bg-[#0081FF] text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">دانلود
                                                 فایل
-                                                ضمیمه شده</a>
+                                            </a>
+
                                             <a href="{{ route('invoices.delete', $invoice->id) }}"
                                                 class="block text-center py-1 bg-[#D73D42] text-white rounded">حذف
                                                 درخواست</a>
+
+                                            @can('confirm-invoices')
+                                                <a href="{{ route('invoices.confirm', $invoice->id) }}"
+                                                    class="block text-center py-1 bg-[#0081FF] text-white rounded">
+                                                    تایید کردن
+                                                </a>
+                                                <a href="{{ route('invoices.reject', $invoice->id) }}"
+                                                    class="block text-center py-1 bg-[#0081FF] text-white rounded">
+                                                    رد کردن
+                                                </a>
+                                            @endcan
+
                                             <a href="http://"
-                                                class="block text-center py-1 bg-emerald-600 text-white rounded">
+                                                class="block text-center py-1 bg-[#0081FF] text-white rounded">
                                                 پرداخت
                                             </a>
                                         </li>

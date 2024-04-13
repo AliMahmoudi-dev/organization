@@ -17,6 +17,7 @@ class Invoice extends Model
         'shaba_number',
         'category_id',
         'user_id',
+        'status',
     ];
 
     public function category()

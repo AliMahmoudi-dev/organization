@@ -24,7 +24,7 @@
                         <div class="table-row border border-gray-300">
                             <ul class="table-cell border border-gray-300 px-4 py-2">
                                 <li class="text-sm text-gray-500 pb-1">شماره موبایل</li>
-                                <li>{{ $user->phone_number }}</li>
+                                <li dir="ltr">{{ $user->phone_number }}</li>
                             </ul>
 
                             <ul class="table-cell border border-gray-300 px-4 py-2">

@@ -50,4 +50,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function isSupervisor()
+    {
+        return $this->roles()->where('name', 'supervisor')->exists();
+    }
 }

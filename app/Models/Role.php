@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Role extends Model
 {
     use HasFactory;
 
@@ -13,8 +13,8 @@ class Category extends Model
 
     public $timestamps = false;
 
-    public function invoices()
+    public function users()
     {
-        return $this->hasMany(Invoice::class);
+        return $this->belongsToMany(User::class);
     }
 }

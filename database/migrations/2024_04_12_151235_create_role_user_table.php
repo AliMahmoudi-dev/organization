@@ -11,21 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('role_user', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('amount')->unsigned();
-            $table->text('description')->nullable();
-            $table->string('shaba_number');
-            $table->tinyInteger('status')->default(0);
-            $table->string('path')->nullable();
-            $table->foreignId('category_id')
-                ->references('id')
-                ->on('categories');
             $table->foreignId('user_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-            $table->timestamps();
+            $table->foreignId('role_id')
+                ->references('id')
+                ->on('roles')
+                ->onDelete('cascade');
         });
     }
 
@@ -34,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('role_user');
     }
 };

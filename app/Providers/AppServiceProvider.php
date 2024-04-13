@@ -22,8 +22,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $supervisorAbilities = [
+            'view-all-invoices',
+            'confirm-invoices',
+            'reject-invoices',
+        ];
+
+        Gate::before(fn (User $user) => $user->isSupervisor());
+
         Gate::define('access-invoice', function (User $user, Invoice $invoice) {
             return $user->invoices()->where('id', $invoice->id)->exists();
         });
+
+        foreach ($supervisorAbilities as $ability) {
+            Gate::define($ability, fn (User $user) => $user->isSupervisor());
+        };
     }
 }

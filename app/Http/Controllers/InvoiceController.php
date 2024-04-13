@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Invoice;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -13,7 +14,9 @@ class InvoiceController extends Controller
 {
     public function index()
     {
-        $invoices = Auth::user()->invoices;
+        $invoices = Gate::allows('view-all-invoices')
+            ? Invoice::all()
+            : Auth::user()->invoices;
 
         return view('invoices', compact('invoices'));
     }
@@ -78,5 +81,27 @@ class InvoiceController extends Controller
         };
 
         return Storage::download($invoice->path, 'file.' . pathinfo($invoice->path)['extension']);
+    }
+
+    public function confirm(Invoice $invoice)
+    {
+        if (Gate::denies('confirm-invoices')) {
+            return back();
+        };
+
+        $invoice->update(['status' => 1]);
+
+        return back();
+    }
+
+    public function reject(Invoice $invoice)
+    {
+        if (Gate::denies('reject-invoices')) {
+            return back();
+        };
+
+        $invoice->update(['status' => -1]);
+
+        return back();
     }
 }
