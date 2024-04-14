@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('amount')->unsigned();
             $table->text('description')->nullable();
-            $table->string('shaba_number');
+            $table->string('sheba_number');
             $table->tinyInteger('status')->default(0);
             $table->string('path')->nullable();
             $table->foreignId('category_id')

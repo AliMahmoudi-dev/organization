@@ -28,7 +28,11 @@ class AppServiceProvider extends ServiceProvider
             'reject-invoices',
         ];
 
-        Gate::before(fn (User $user) => $user->isSupervisor());
+        Gate::before(function (User $user) {
+            if ($user->isSupervisor()) {
+                return true;
+            };
+        });
 
         Gate::define('access-invoice', function (User $user, Invoice $invoice) {
             return $user->invoices()->where('id', $invoice->id)->exists();

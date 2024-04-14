@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Services\Payment\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -12,6 +13,13 @@ use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
 {
+    private $transaction;
+
+    public function __construct(Transaction $transaction)
+    {
+        $this->transaction = $transaction;
+    }
+
     public function index()
     {
         $invoices = Gate::allows('view-all-invoices')
@@ -38,7 +46,7 @@ class InvoiceController extends Controller
 
         Invoice::create([
             'category_id' => $validated['category'],
-            'shaba_number' => $validated['shaba_number'],
+            'sheba_number' => $validated['sheba_number'],
             'amount' => $validated['amount'],
             'path' => isset($path) ? $path : null,
             'description' => $validated['description'],
@@ -52,7 +60,7 @@ class InvoiceController extends Controller
     {
         return $request->validate([
             'category' => ['required', 'exists:categories,id'],
-            'shaba_number' => ['required', 'numeric', 'digits:24'],
+            'sheba_number' => ['required', 'numeric', 'digits:24'],
             'amount' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],
             'file' => ['nullable', 'file', 'mimes:pdf'],
@@ -85,7 +93,7 @@ class InvoiceController extends Controller
 
     public function confirm(Invoice $invoice)
     {
-        if (Gate::denies('confirm-invoices')) {
+        if (Gate::denies('confirm-invoices') || $invoice->alreadyPaid()) {
             return back();
         };
 
@@ -96,12 +104,25 @@ class InvoiceController extends Controller
 
     public function reject(Invoice $invoice)
     {
-        if (Gate::denies('reject-invoices')) {
+        if (Gate::denies('reject-invoices') || $invoice->alreadyPaid()) {
             return back();
         };
 
         $invoice->update(['status' => -1]);
 
         return back();
+    }
+
+    public function pay(Invoice $invoice)
+    {
+        if (Gate::denies('access-invoice', $invoice) || !$invoice->isConfirmed() || $invoice->alreadyPaid()) {
+            return back();
+        };
+
+        return $this->transaction->pay($invoice)
+            ? back()->with('payment_status', true)
+            : back()->with('payment_status', false);
+        // ? view('invoices', ['payment_status' => true, 'invoice' => $invoice])
+        // : view('invoices', ['payment_status' => false, 'invoice' => $invoice]);
     }
 }

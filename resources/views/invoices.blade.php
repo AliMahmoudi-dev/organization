@@ -2,7 +2,7 @@
     <div class="w-full min-h-full flex flex-col">
         <x-header />
 
-        <div class="w-full py-10 flex flex-col flex-grow items-center">
+        <div class="w-full relative py-10 flex flex-col flex-grow items-center">
             <div class="w-1/2">
                 <div
                     class="w-full bg-gray-50 mb-2.5 border text-center border-gray-300 text-gray-800 text-lg font-bold px-3.5 py-2">
@@ -56,7 +56,7 @@
                                 <div class="flex">
                                     <ul class="w-1/2 border-l border-t border-gray-300 px-4 py-2">
                                         <li class="text-sm text-gray-500 pb-1">شماره شبا</li>
-                                        <li>{{ $invoice->shaba_number }}</li>
+                                        <li>{{ $invoice->sheba_number }}</li>
                                     </ul>
 
                                     <ul class="w-1/2 border-t border-gray-300 px-4 py-2">
@@ -73,6 +73,10 @@
 
                                             @case(1)
                                                 <li>تایید شده</li>
+                                            @break
+
+                                            @case(2)
+                                                <li>پرداخت شده</li>
                                             @break
                                         @endswitch
                                     </ul>
@@ -103,19 +107,26 @@
 
                                             @can('confirm-invoices')
                                                 <a href="{{ route('invoices.confirm', $invoice->id) }}"
-                                                    class="block text-center py-1 bg-[#0081FF] text-white rounded">
+                                                    class="block text-center py-1 {{ !$invoice->alreadyPaid() ? 'bg-[#0081FF] text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">
                                                     تایید کردن
                                                 </a>
                                                 <a href="{{ route('invoices.reject', $invoice->id) }}"
-                                                    class="block text-center py-1 bg-[#0081FF] text-white rounded">
+                                                    class="block text-center py-1 {{ !$invoice->alreadyPaid() ? 'bg-[#0081FF] text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">
                                                     رد کردن
                                                 </a>
                                             @endcan
 
-                                            <a href="http://"
-                                                class="block text-center py-1 bg-[#0081FF] text-white rounded">
-                                                پرداخت
-                                            </a>
+                                            @if (!$invoice->isConfirmed() || $invoice->alreadyPaid())
+                                                <a
+                                                    class="block text-center py-1 bg-[#E5E5E5] text-gray-400 cursor-context-menu rounded">
+                                                    پرداخت
+                                                </a>
+                                            @else
+                                                <a href="{{ route('invoices.pay', $invoice->id) }}"
+                                                    class="block text-center py-1 bg-[#0081FF] text-white rounded">
+                                                    پرداخت
+                                                </a>
+                                            @endif
                                         </li>
                                     </ul>
                                 </div>
@@ -129,6 +140,18 @@
                     @endif
                 </div>
             </div>
+
+            @if (!is_null(session('payment_status')))
+                @if (session('payment_status'))
+                    <div
+                        class="alert absolute top-4 right-10 bg-green-600 text-white font-semibold py-3 px-8 rounded-md">
+                        پرداخت موفق</div>
+                @else
+                    <div class="alert absolute top-4 right-10 bg-red-500 text-white font-semibold py-3 px-8 rounded-md">
+                        پرداخت ناموفق</div>
+                @endif
+            @endif
+
         </div>
     </div>
 </x-layout>

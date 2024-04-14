@@ -40,3 +40,23 @@ select {
     background-position-x: 0.5%;
     background-position-y: 8px;
 }
+
+.alert {
+    animation-name: hide;
+    animation-duration: 2.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}

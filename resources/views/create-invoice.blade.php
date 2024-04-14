@@ -27,11 +27,11 @@
                                     <x-error field-name="category" />
                                 </div>
 
-                                <div class="w-full @error('shaba_number') '' @else pb-5 @enderror">
+                                <div class="w-full @error('sheba_number') '' @else pb-5 @enderror">
                                     <input class="w-full border outline-none border-slate-400 rounded-md py-2 px-3.5"
-                                        placeholder="شماره شبا" type="text" name="shaba_number" id="shaba_number"
-                                        value="{{ old('shaba_number') }}">
-                                    <x-error field-name="shaba_number" />
+                                        placeholder="شماره شبا" type="text" name="sheba_number" id="sheba_number"
+                                        value="{{ old('sheba_number') }}">
+                                    <x-error field-name="sheba_number" />
                                 </div>
 
                                 <div class="w-full @error('amount') '' @else pb-5 @enderror">

@@ -14,7 +14,7 @@ class Invoice extends Model
         'amount',
         'path',
         'description',
-        'shaba_number',
+        'sheba_number',
         'category_id',
         'user_id',
         'status',
@@ -33,5 +33,20 @@ class Invoice extends Model
     public function hasFile()
     {
         return !empty($this->path);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function alreadyPaid()
+    {
+        return $this->payments()->where('status', true)->exists();
+    }
+
+    public function isConfirmed()
+    {
+        return $this->status > 0;
     }
 }
