@@ -20,6 +20,7 @@ class Pasargad implements DriverInterface
     {
         return [
             'status' => self::TRANSACTION_FAILED,
+            'ref_id' => '',
         ];
     }
 

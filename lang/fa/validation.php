@@ -171,7 +171,7 @@ return [
     */
 
     'custom' => [
-        'shaba_number' => [
+        'sheba_number' => [
             'numeric' => 'لطفا شماره شبا خود را به صورت عددی و بدون IR وارد کنید.',
         ],
     ],
@@ -195,7 +195,7 @@ return [
         'password_confirmation' => 'تکرار رمز عبور',
         'email' => 'ایمیل',
         'category' => 'دسته بندی',
-        'shaba_number' => 'شماره شبا',
+        'sheba_number' => 'شماره شبا',
         'amount' => 'مبلغ',
         'file' => 'فایل',
     ],

@@ -6,6 +6,7 @@ use App\Events\InvoiceStatusChanged;
 use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Rules\ShebaNumber;
 use App\Services\Payment\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +74,7 @@ class InvoiceController extends Controller
     {
         return $request->validate([
             'category' => ['required', 'exists:categories,id'],
-            'sheba_number' => ['required', 'numeric', 'digits:24'],
+            'sheba_number' => ['required', 'numeric', 'digits:24', new ShebaNumber],
             'amount' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],
             'file' => ['nullable', 'file', 'mimes:pdf'],

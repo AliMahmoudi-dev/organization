@@ -5,6 +5,7 @@ namespace App\Services\Payment;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Services\Payment\Contracts\DriverInterface;
+use Exception;
 use Illuminate\Http\Request;
 
 class Transaction
@@ -26,12 +27,21 @@ class Transaction
 
         $response = $this->driverFactory()->pay($payment);
 
+        $this->ensureHasRequiredParameters($response);
+
         if ($response['status'] == DriverInterface::TRANSACTION_FAILED)
             return false;
 
         $payment->markAsPaid($response['ref_id']);
 
         return true;
+    }
+
+    public function ensureHasRequiredParameters($array)
+    {
+        if (!array_key_exists('status', $array) || !array_key_exists('ref_id', $array)) {
+            throw new Exception('The response does not contain the required parameters [status, ref_id]');
+        };
     }
 
     private function createPayment()
