@@ -8,11 +8,17 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
+    /**
+     * reutrn login form.
+     */
     public function create()
     {
         return view('login');
     }
 
+    /**
+     * User login.
+     */
     public function store(LoginRequest $request)
     {
         $request->authenticate();
@@ -20,6 +26,9 @@ class AuthenticatedSessionController extends Controller
         return redirect()->route('home');
     }
 
+    /**
+     * User logout.
+     */
     public function destroy(Request $request)
     {
         Auth::logout();

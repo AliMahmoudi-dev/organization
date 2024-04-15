@@ -38,7 +38,7 @@ Route::controller(InvoiceController::class)
         Route::post('/invoices', 'store')->name('invoices.store');
         Route::get('/invoices/{invoice}/delete', 'delete')->name('invoices.delete');
         Route::get('/invoices/{invoice}/confirm', 'confirm')->name('invoices.confirm');
-        Route::get('/invoices/{invoice}/reject', 'reject')->name('invoices.reject');
+        Route::post('/invoices/{invoice}/reject', 'reject')->name('invoices.reject');
         Route::get('/invoices/{invoice}/pay', 'pay')->name('invoices.pay');
         Route::get('/invoices/{invoice}/download-attached-file', 'downloadAttachedFile')->name('invoices.download-file');
     });

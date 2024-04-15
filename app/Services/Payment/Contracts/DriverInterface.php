@@ -9,5 +9,5 @@ interface DriverInterface
     const TRANSACTION_FAILED = 'transaction.failed';
     const TRANSACTION_SUCCESS = 'transaction.success';
 
-    public function pay(Payment $payment);
+    public function pay(Payment $payment): array;
 };

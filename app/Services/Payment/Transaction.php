@@ -24,12 +24,12 @@ class Transaction
 
         $payment = $this->createPayment();
 
-        $result = $this->driverFactory()->pay($payment);
+        $response = $this->driverFactory()->pay($payment);
 
-        if ($result['status'] == DriverInterface::TRANSACTION_FAILED)
+        if ($response['status'] == DriverInterface::TRANSACTION_FAILED)
             return false;
 
-        $payment->markAsPaid($result['ref_id']);
+        $payment->markAsPaid($response['ref_id']);
 
         return true;
     }

@@ -101,8 +101,8 @@
                                                 فایل
                                             </a>
 
-                                            <a href="{{ route('invoices.delete', $invoice->id) }}"
-                                                class="block text-center py-1 bg-[#D73D42] text-white rounded">حذف
+                                            <a @if (!$invoice->alreadyPaid()) href="{{ route('invoices.delete', $invoice->id) }}" @endif
+                                                class="block text-center py-1 {{ !$invoice->alreadyPaid() ? 'bg-[#D73D42] text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">حذف
                                                 درخواست</a>
 
                                             @can('confirm-invoices')
@@ -110,10 +110,10 @@
                                                     class="block text-center py-1 {{ !$invoice->alreadyPaid() ? 'bg-[#0081FF] text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">
                                                     تایید کردن
                                                 </a>
-                                                <a href="{{ route('invoices.reject', $invoice->id) }}"
-                                                    class="block text-center py-1 {{ !$invoice->alreadyPaid() ? 'bg-[#0081FF] text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">
+                                                <button data-url="{{ route('invoices.reject', $invoice->id) }}"
+                                                    class="invoice-reject block text-center py-1 {{ !$invoice->alreadyPaid() ? 'bg-[#0081FF] text-white' : 'bg-[#E5E5E5] text-gray-400 cursor-context-menu' }} rounded">
                                                     رد کردن
-                                                </a>
+                                                </button>
                                             @endcan
 
                                             @if (!$invoice->isConfirmed() || $invoice->alreadyPaid())
@@ -144,13 +144,35 @@
             @if (!is_null(session('payment_status')))
                 @if (session('payment_status'))
                     <div
-                        class="alert absolute top-4 right-10 bg-green-600 text-white font-semibold py-3 px-8 rounded-md">
+                        class="alert fixed top-4 right-10 bg-green-600 text-white font-semibold py-3 px-8 rounded-md">
                         پرداخت موفق</div>
                 @else
-                    <div class="alert absolute top-4 right-10 bg-red-500 text-white font-semibold py-3 px-8 rounded-md">
+                    <div class="alert fixed top-4 right-10 bg-red-500 text-white font-semibold py-3 px-8 rounded-md">
                         پرداخت ناموفق</div>
                 @endif
             @endif
+
+            <div id="reject" class="fixed inset-0 bg-black bg-opacity-45 hidden justify-center items-center">
+                <div class="w-[500px] relative rounded-md overflow-hidden bg-white py-6">
+                    <form action="" method="post">
+                        @csrf
+                        <label for="message" class="pr-12 py-2 block font-bold">علت رد درخواست</label>
+                        <textarea class="w-[80%] block mx-auto border outline-none border-slate-400 rounded-md py-2 px-3.5" name="message"
+                            id="message" rows="8"></textarea>
+                        <input
+                            class="border mt-3.5 outline-none cursor-pointer border-red-500 bg-red-500 py-2 px-3.5 font-bold text-white rounded w-[80%] mx-auto block"
+                            type="submit" value="رد درخواست">
+                    </form>
+                    <div class="absolute top-2 left-2">
+                        <button>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>

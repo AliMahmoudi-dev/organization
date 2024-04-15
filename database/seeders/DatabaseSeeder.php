@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $role = Role::create(['name' => 'supervisor']);
 
-        User::factory()->hasAttached($role)->create();
+        User::factory()->hasAttached($role)->create(); // password = password
 
         $this->call([
             CategorySeeder::class,

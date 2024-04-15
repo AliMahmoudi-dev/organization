@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InvoiceStatusChanged;
 use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\User;
@@ -20,6 +21,9 @@ class InvoiceController extends Controller
         $this->transaction = $transaction;
     }
 
+    /**
+     * Display a list of invoices.
+     */
     public function index()
     {
         $invoices = Gate::allows('view-all-invoices')
@@ -29,6 +33,9 @@ class InvoiceController extends Controller
         return view('invoices', compact('invoices'));
     }
 
+    /**
+     * Return a form to create an invoice.
+     */
     public function create()
     {
         $categories = Category::all();
@@ -36,6 +43,9 @@ class InvoiceController extends Controller
         return view('create-invoice', compact('categories'));
     }
 
+    /**
+     * create an invoice.
+     */
     public function store(Request $request)
     {
         $validated = $this->validateInputs($request);
@@ -56,6 +66,9 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index');
     }
 
+    /**
+     * Validate inputs to create an invoice.
+     */
     public function validateInputs($request)
     {
         return $request->validate([
@@ -67,9 +80,12 @@ class InvoiceController extends Controller
         ], ['file.mimes' => 'پسوند فايل مجاز نمي باشد. پسوندهای مجاز: pdf']);
     }
 
+    /**
+     * Delete an invoice.
+     */
     public function delete(Invoice $invoice)
     {
-        if (Gate::denies('access-invoice', $invoice)) {
+        if (Gate::denies('access-invoice', $invoice) || $invoice->alreadyPaid()) {
             return back();
         };
 
@@ -91,6 +107,9 @@ class InvoiceController extends Controller
         return Storage::download($invoice->path, 'file.' . pathinfo($invoice->path)['extension']);
     }
 
+    /**
+     * Confirm the invoice.
+     */
     public function confirm(Invoice $invoice)
     {
         if (Gate::denies('confirm-invoices') || $invoice->alreadyPaid()) {
@@ -102,27 +121,33 @@ class InvoiceController extends Controller
         return back();
     }
 
-    public function reject(Invoice $invoice)
+    /**
+     * reject the invoice.
+     */
+    public function reject(Invoice $invoice, Request $request)
     {
         if (Gate::denies('reject-invoices') || $invoice->alreadyPaid()) {
             return back();
         };
 
+        $validated = $request->validate(['message' => ['nullable', 'string']]);
+
         $invoice->update(['status' => -1]);
+
+        InvoiceStatusChanged::dispatch($invoice, 'invoice-reject', $validated['message']);
 
         return back();
     }
 
+    /**
+     * Invoice payment.
+     */
     public function pay(Invoice $invoice)
     {
         if (Gate::denies('access-invoice', $invoice) || !$invoice->isConfirmed() || $invoice->alreadyPaid()) {
             return back();
         };
 
-        return $this->transaction->pay($invoice)
-            ? back()->with('payment_status', true)
-            : back()->with('payment_status', false);
-        // ? view('invoices', ['payment_status' => true, 'invoice' => $invoice])
-        // : view('invoices', ['payment_status' => false, 'invoice' => $invoice]);
+        return back()->with('payment_status', $this->transaction->pay($invoice));
     }
-}
+};

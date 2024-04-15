@@ -7,7 +7,7 @@ use App\Services\Payment\Contracts\DriverInterface;
 
 class Pasargad implements DriverInterface
 {
-    public function pay(Payment $payment)
+    public function pay(Payment $payment): array
     {
         $response = $this->callApi($this->getPayload($payment));
 

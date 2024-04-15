@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\InvoiceStatusChanged;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -31,5 +32,7 @@ class Payment extends Model
 
             $this->update(['status' => true, 'ref_id' => $ref_id]);
         });
+
+        InvoiceStatusChanged::dispatch($this->invoice, 'invoice-paid');
     }
 }
